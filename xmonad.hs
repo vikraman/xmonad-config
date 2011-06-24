@@ -34,29 +34,31 @@ main = do
 				startupHook	= myStartupHook
 			}	`additionalKeys` myKeys
 
--- myModMask
+-- Teh modMask key
 -- 
 myModMask = mod4Mask
 
--- myTerminal
+-- Programs
 --
 myTerminal = "Terminal"
+myBrowser = "chromium"
+myFilemgr = "Thunar"
 
--- myBorderWidth
+-- BorderWidth
 --
 myBorderWidth = 0
 
--- myFonts
+-- Fonts
 --
 myXFTFont = "xft:Monospace:pixelsize=12"
 
--- myColors
+-- Colors
 --
 myBGColor		= "#202020"
 myPromptFGColor	= "#FF931E"
 myPromptBGColor	= "#101010"
 
--- myXPConfig
+-- Prompt theme
 --
 myXPConfig = defaultXPConfig
 			{
@@ -72,25 +74,27 @@ myXPConfig = defaultXPConfig
 				height = 18
 			}
 
--- myKeys
+-- Additional keys
 --
-myKeys = 	[
-				((myModMask,	xK_Tab),	spawn myTerminal),
-				((myModMask,	xK_p),		spawn (myTerminal ++ " -e ncmpcpp")),
-				((myModMask,	xK_a),		shellPrompt myXPConfig)
-			]
+myKeys = [
+			((myModMask,	xK_Tab),	spawn myTerminal),
+			((myModMask,	xK_a),		shellPrompt myXPConfig),
+			((myModMask,	xK_p),		spawn (myTerminal ++ " -e ncmpcpp")),
+			((myModMask,	xK_t),		spawn myFilemgr),
+			((myModMask,	xK_w),		spawn myBrowser)
+		 ]
 
--- myManageHook
+-- Manage
 --
 myManageHook = (composeAll
-   [ className =? "Gimp" --> doFloat ])
-   <+> manageDocks <+> manageHook defaultConfig
+				[ className =? "Gimp" --> doFloat ]
+			   ) <+> manageDocks <+> manageHook defaultConfig
 
--- myLayoutHook
+-- Layout
 --
 myLayoutHook = avoidStruts $ layoutHook defaultConfig
 
--- myStartupHook
+-- Startup
 --
 myStartupHook = do
 	spawn "pgrep xcompmgr || xcompmgr"
