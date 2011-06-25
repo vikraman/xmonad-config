@@ -8,7 +8,10 @@
 --
 -- Main
 import XMonad
+
+--Hooks
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 
 -- Prompt
 import XMonad.Prompt
@@ -29,6 +32,7 @@ main = do
 				modMask		= myModMask,
 				terminal	= myTerminal,
 				borderWidth	= myBorderWidth,
+				workspaces	= myWorkspaces,
 				manageHook	= myManageHook,
 				layoutHook	= myLayoutHook,
 				startupHook	= myStartupHook
@@ -40,11 +44,11 @@ myModMask = mod4Mask
 
 -- Programs
 --
-myTerminal = "Terminal"
-myBrowser = "chromium"
-myFilemgr = "Thunar"
+myTerminal	= "Terminal"
+myBrowser	= "chromium"
+myFilemgr	= "Thunar"
 
--- BorderWidth
+-- Border width
 --
 myBorderWidth = 0
 
@@ -84,11 +88,48 @@ myKeys = [
 			((myModMask,	xK_w),		spawn myBrowser)
 		 ]
 
+-- List of workspaces
+--
+myWorkspaces = ["1:main","2:web","3:code","4:file","5:chat","6:ssh","7:mail","8:mon","9:x","0:y","-","="]
+
 -- Manage
 --
-myManageHook = (composeAll
-				[ className =? "Gimp" --> doFloat ]
-			   ) <+> manageDocks <+> manageHook defaultConfig
+myManageHook = (composeAll . concat $
+				[
+					[isDialog --> doFloat],
+					[className =? c --> doFloat	| c <- myCFloats],
+					[title =? t --> doFloat		| t <- myTFloats],
+					[resource =? i --> doIgnore	| i <- myIgnores],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "1:main"	| x <- my1Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "2:web"	| x <- my2Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "3:code"	| x <- my3Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "4:file"	| x <- my4Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "5:chat"	| x <- my5Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "6:ssh"	| x <- my6Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "7:mail"	| x <- my7Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "8:mon"	| x <- my8Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "9:x"		| x <- my9Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "0:y"		| x <- my0Shifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "-"		| x <- myMinusShifts],
+					[(className =? x <||> title =? x <||> resource =? x) --> doShift "="		| x <- myEqualShifts]
+				]
+			   ) <+> manageDocks
+	where
+		myCFloats =	["MPlayer","vlc","Gimp","Xmessage"]
+		myTFloats =	[]
+		myIgnores =	["desktop_window"]
+		my1Shifts =	[]
+		my2Shifts =	["Firefox","Chromium-browser"]
+		my3Shifts =	["Eclipse","emacs"]
+		my4Shifts =	["Thunar"]
+		my5Shifts =	["Xchat","Pidgin"]
+		my6Shifts =	[]
+		my7Shifts =	[]
+		my8Shifts =	[]
+		my9Shifts =	[]
+		my0Shifts =	[]
+		myMinusShifts =	[]
+		myEqualShifts =	[]
 
 -- Layout
 --
