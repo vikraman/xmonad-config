@@ -13,6 +13,9 @@ import XMonad
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 
+-- Actions
+import XMonad.Actions.CycleWS
+
 -- Layouts
 import XMonad.Layout.Accordion
 import XMonad.Layout.Tabbed
@@ -91,11 +94,20 @@ myXPConfig = defaultXPConfig
 -- Additional keys
 --
 myKeys = [
+			-- program launchers
 			((myModMask,	xK_Tab),	spawn myTerminal),
-			((myModMask,	xK_a),		shellPrompt myXPConfig),
 			((myModMask,	xK_p),		spawn (myTerminal ++ " -e ncmpcpp")),
 			((myModMask,	xK_t),		spawn myFilemgr),
-			((myModMask,	xK_w),		spawn myBrowser)
+			((myModMask,	xK_w),		spawn myBrowser),
+
+			-- prompt
+			((myModMask,	xK_a),		shellPrompt myXPConfig),
+
+			-- cycle workspaces
+			((myModMask,				xK_Right),	nextWS),
+			((myModMask,				xK_Left),	prevWS),
+			((myModMask .|. shiftMask,	xK_Right),	shiftToNext >> nextWS),
+			((myModMask .|. shiftMask,	xK_Left),	shiftToPrev >> prevWS)
 		 ]
 
 -- List of workspaces
