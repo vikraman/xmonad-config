@@ -112,9 +112,9 @@ q =* x = fmap (x `isInfixOf`) q
 
 myManageHook = (composeAll . concat $
 				[
-					[isDialog --> doFloat],
-					[className =* c --> doFloat	| c <- myCFloats],
-					[title =* t --> doFloat		| t <- myTFloats],
+					[isDialog --> doCenterFloat],
+					[className =* c --> doCenterFloat | c <- myCFloats],
+					[title =* t --> doCenterFloat | t <- myTFloats],
 					[resource =* i --> doIgnore	| i <- myIgnores],
 					[(className =* x <||> title =* x <||> resource =* x) --> doShift "1:main"	| x <- my1Shifts],
 					[(className =* x <||> title =* x <||> resource =* x) --> doShift "2:web"	| x <- my2Shifts],
