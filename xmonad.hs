@@ -9,9 +9,18 @@
 -- Main
 import XMonad
 
---Hooks
+-- Hooks
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+
+-- Layouts
+import XMonad.Layout.Accordion
+import XMonad.Layout.Tabbed
+
+-- Layout helpers
+import XMonad.Layout.LayoutHints
+import XMonad.Layout.Magnifier
+import XMonad.Layout.NoBorders
 
 -- Prompt
 import XMonad.Prompt
@@ -122,7 +131,7 @@ myManageHook = (composeAll . concat $
 				]
 			   ) <+> manageDocks
 	where
-		myCFloats =	["MPlayer","vlc","Gimp","Xmessage"]
+		myCFloats =	["feh","MPlayer","vlc","Gimp","Xmessage"]
 		myTFloats =	[]
 		myIgnores =	["desktop_window"]
 		my1Shifts =	[]
@@ -140,12 +149,26 @@ myManageHook = (composeAll . concat $
 
 -- Layout
 --
-myLayoutHook = avoidStruts $ layoutHook defaultConfig
+myLayoutHook =	avoidStruts $
+				standardLayouts
+	where
+		standardLayouts =	tiled ||| Mirror tiled ||| Accordion |||
+							trueFull ||| magTiled ||| simpleTabbed
+
+		hinted l = layoutHintsWithPlacement (0.5,0.5) l
+
+		tiled = Tall nmaster delta ratio
+		trueFull = noBorders Full
+		magTiled = magnifier tiled
+
+		nmaster = 1
+		ratio = 9/16
+		delta = 3/100
 
 -- Startup
 --
 myStartupHook = do
 	spawn "pgrep xcompmgr || xcompmgr"
-	spawn "Esetroot -scale ~/Pictures/Dropbacks/wallpaper/wallpaper.jpg"
+	spawn "feh --bg-fill ~/Pictures/Dropbacks/wallpaper"
 	spawn "xsetroot -cursor_name left_ptr"
 	spawn "pgrep conky || conky"
