@@ -69,6 +69,7 @@ myBorderWidth = 0
 
 -- Fonts
 --
+myFont = "-*-fixed-bold-r-normal-*-12-*-*-*-*-*-*-*"
 myXFTFont = "xft:Monospace:pixelsize=12"
 
 -- Colors
@@ -87,7 +88,7 @@ myXPConfig = defaultXPConfig
 				bgHLight = myPromptFGColor,
 				promptBorderWidth = 1,
 				historySize = 100,
-				font = myXFTFont,
+				font = myFont,
 				position = Top,
 				borderColor = myBGColor,
 				height = 18
