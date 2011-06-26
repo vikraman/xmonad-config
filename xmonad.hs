@@ -16,6 +16,7 @@ import XMonad.Hooks.ManageHelpers
 
 -- Actions
 import XMonad.Actions.CycleWS
+import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.WindowGo
 
 -- Layouts
@@ -29,15 +30,19 @@ import XMonad.Layout.NoBorders
 
 -- Prompt
 import XMonad.Prompt
+import XMonad.Prompt.RunOrRaise
 import XMonad.Prompt.Shell
 
 -- Xmonad utils
 import XMonad.Util.Run
 import XMonad.Util.EZConfig
+import XMonad.Util.XSelection
+import qualified XMonad.StackSet as W
 
 -- Haskell utils
-import System.IO
+import Control.Monad (liftM2)
 import Data.List
+import System.IO
 
 -- Main
 --
@@ -61,7 +66,11 @@ myModMask = mod4Mask
 
 -- Teh terminal
 --
-myTerminal	= "Terminal"
+myTerminal = "Terminal"
+
+-- Programs
+--
+myBrowser = "chromium-browser"
 
 -- Border width
 --
@@ -114,18 +123,22 @@ myKeys = [
 			("M-S-<XF86AudioPlay>",			spawn "mpc stop"),
 
 			-- prompt
-			("M-a",			shellPrompt myXPConfig),
+			("M-r",			shellPrompt myXPConfig),
+			("M-S-r",		runOrRaisePrompt myXPConfig),
+
+			-- url launcher
+			("M-s",			safePromptSelection myBrowser),
 
 			-- cycle workspaces
-			("M-<Right>",	nextWS),
-			("M-<Left>",	prevWS),
+			("M-<Right>",	moveTo Next NonEmptyWS),
+			("M-<Left>",	moveTo Prev NonEmptyWS),
 			("M-S-<Right>",	shiftToNext >> nextWS),
 			("M-S-<Left>",	shiftToPrev >> prevWS)
 		 ]
 
 -- List of workspaces
 --
-myWorkspaces = ["1:main","2:web","3:code","4:file","5:chat","6:ssh","7:mail","8:mon","9:x","0:y","-","="]
+myWorkspaces = ["1:main","2:web","3:code","4:file","5:chat","6:ssh","7:mail","8:mon","9:float","0:x","-","="]
 
 -- Manage
 --
@@ -141,18 +154,18 @@ myManageHook = (composeAll . concat $
 					[className =* c --> doCenterFloat | c <- myCFloats],
 					[title =* t --> doCenterFloat | t <- myTFloats],
 					[resource =* i --> doIgnore	| i <- myIgnores],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "1:main"	| x <- my1Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "2:web"	| x <- my2Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "3:code"	| x <- my3Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "4:file"	| x <- my4Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "5:chat"	| x <- my5Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "6:ssh"	| x <- my6Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "7:mail"	| x <- my7Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "8:mon"	| x <- my8Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "9:x"		| x <- my9Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "0:y"		| x <- my0Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "-"		| x <- myMinusShifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> doShift "="		| x <- myEqualShifts]
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "1:main"	| x <- my1Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "2:web"	| x <- my2Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "3:code"	| x <- my3Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "4:file"	| x <- my4Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "5:chat"	| x <- my5Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "6:ssh"	| x <- my6Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "7:mail"	| x <- my7Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "8:mon"	| x <- my8Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "9:float"| x <- my9Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "0:x"	| x <- my0Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "-"		| x <- myMinusShifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "="		| x <- myEqualShifts]
 				]
 			   ) <+> manageDocks
 	where
@@ -164,13 +177,14 @@ myManageHook = (composeAll . concat $
 		my3Shifts =	["Eclipse","emacs"]
 		my4Shifts =	["Thunar"]
 		my5Shifts =	["Xchat","Pidgin"]
-		my6Shifts =	[]
-		my7Shifts =	[]
+		my6Shifts =	["ssh"]
+		my7Shifts =	["mutt"]
 		my8Shifts =	[]
 		my9Shifts =	[]
-		my0Shifts =	[]
+		my0Shifts =	["ncmpcpp","MPlayer","vlc"]
 		myMinusShifts =	[]
 		myEqualShifts =	[]
+		viewShift = doF . liftM2 (.) W.greedyView W.shift
 
 -- Layout
 --
@@ -192,7 +206,10 @@ myLayoutHook =	avoidStruts $
 
 -- Log
 --
-myLogHook pipe = dynamicLogWithPP $ defaultPP { ppOutput = hPutStrLn pipe }
+myLogHook pipe = dynamicLogWithPP $ defaultPP
+					{
+						ppOutput = hPutStrLn pipe
+					}
 
 -- Startup
 --
