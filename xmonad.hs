@@ -16,6 +16,7 @@ import XMonad.Hooks.ManageHelpers
 
 -- Actions
 import XMonad.Actions.CycleWS
+import XMonad.Actions.WindowGo
 
 -- Layouts
 import XMonad.Layout.Accordion
@@ -31,8 +32,8 @@ import XMonad.Prompt
 import XMonad.Prompt.Shell
 
 -- Xmonad utils
-import XMonad.Util.Run(spawnPipe)
-import XMonad.Util.EZConfig(additionalKeys)
+import XMonad.Util.Run
+import XMonad.Util.EZConfig
 
 -- Haskell utils
 import System.IO
@@ -52,17 +53,15 @@ main = do
 				layoutHook	= myLayoutHook,
 				logHook		= myLogHook xmproc,
 				startupHook	= myStartupHook
-			}	`additionalKeys` myKeys
+			}	`additionalKeysP` myKeys
 
 -- Teh modMask key
 -- 
 myModMask = mod4Mask
 
--- Programs
+-- Teh terminal
 --
 myTerminal	= "Terminal"
-myBrowser	= "chromium"
-myFilemgr	= "Thunar"
 
 -- Border width
 --
@@ -98,19 +97,29 @@ myXPConfig = defaultXPConfig
 --
 myKeys = [
 			-- program launchers
-			((myModMask,	xK_Tab),	spawn myTerminal),
-			((myModMask,	xK_p),		spawn (myTerminal ++ " -e ncmpcpp")),
-			((myModMask,	xK_t),		spawn myFilemgr),
-			((myModMask,	xK_w),		spawn myBrowser),
+			("M-<Tab>",	spawn myTerminal),
+			("M-m",		raiseMaybe (runInTerm "-T mutt" "mutt") (title =* "mutt")),
+			("M-p",		raiseMaybe (runInTerm "-T ncmpcpp" "ncmpcpp") (title =* "ncmpcpp")),
+			("M-t",		spawn "Thunar"),
+			("M-w",		raiseBrowser),
+
+			-- multimedia keys
+			("M-<XF86AudioMute>",			spawn "amixer -q sset Master toggle"),
+			("M-<XF86AudioLowerVolume>",	spawn "amixer -q sset Master 1%-"),
+			("M-<XF86AudioRaiseVolume>",	spawn "amixer -q sset Master 1%+"),
+			("M-<XF86AudioPrev>",			spawn "mpc prev"),
+			("M-<XF86AudioPlay>",			spawn "mpc toggle"),
+			("M-<XF86AudioNext>",			spawn "mpc next"),
+			("M-S-<XF86AudioPlay>",			spawn "mpc stop"),
 
 			-- prompt
-			((myModMask,	xK_a),		shellPrompt myXPConfig),
+			("M-a",			shellPrompt myXPConfig),
 
 			-- cycle workspaces
-			((myModMask,				xK_Right),	nextWS),
-			((myModMask,				xK_Left),	prevWS),
-			((myModMask .|. shiftMask,	xK_Right),	shiftToNext >> nextWS),
-			((myModMask .|. shiftMask,	xK_Left),	shiftToPrev >> prevWS)
+			("M-<Right>",	nextWS),
+			("M-<Left>",	prevWS),
+			("M-S-<Right>",	shiftToNext >> nextWS),
+			("M-S-<Left>",	shiftToPrev >> prevWS)
 		 ]
 
 -- List of workspaces
