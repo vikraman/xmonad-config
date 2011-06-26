@@ -10,6 +10,7 @@
 import XMonad
 
 -- Hooks
+import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 
@@ -40,6 +41,7 @@ import Data.List
 -- Main
 --
 main = do
+	xmproc <- spawnPipe "xmobar"
 	xmonad $ defaultConfig
 			{
 				modMask		= myModMask,
@@ -48,6 +50,7 @@ main = do
 				workspaces	= myWorkspaces,
 				manageHook	= myManageHook,
 				layoutHook	= myLayoutHook,
+				logHook		= myLogHook xmproc,
 				startupHook	= myStartupHook
 			}	`additionalKeys` myKeys
 
@@ -176,6 +179,10 @@ myLayoutHook =	avoidStruts $
 		nmaster = 1
 		ratio = 9/16
 		delta = 3/100
+
+-- Log
+--
+myLogHook pipe = dynamicLogWithPP $ defaultPP { ppOutput = hPutStrLn pipe }
 
 -- Startup
 --
