@@ -154,18 +154,18 @@ myManageHook = (composeAll . concat $
 					[className =* c --> doCenterFloat | c <- myCFloats],
 					[title =* t --> doCenterFloat | t <- myTFloats],
 					[resource =* i --> doIgnore	| i <- myIgnores],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "1:main"	| x <- my1Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "2:web"	| x <- my2Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "3:code"	| x <- my3Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "4:file"	| x <- my4Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "5:chat"	| x <- my5Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "6:ssh"	| x <- my6Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "7:mail"	| x <- my7Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "8:mon"	| x <- my8Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "9:float"| x <- my9Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "0:x"	| x <- my0Shifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "-"		| x <- myMinusShifts],
-					[(className =* x <||> title =* x <||> resource =* x) --> viewShift "="		| x <- myEqualShifts]
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!0)	| x <- my1Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!1)	| x <- my2Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!2)	| x <- my3Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!3)	| x <- my4Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!4)	| x <- my5Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!5)	| x <- my6Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!6)	| x <- my7Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!7)	| x <- my8Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!8)	| x <- my9Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!9)	| x <- my0Shifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!10)	| x <- myMinusShifts],
+					[(className =* x <||> title =* x <||> resource =* x) --> viewShift (myWorkspaces!!11)	| x <- myEqualShifts]
 				]
 			   ) <+> manageDocks
 	where
