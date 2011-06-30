@@ -7,7 +7,7 @@
 -- Imports
 --
 -- Main
-import XMonad
+import XMonad hiding ( (|||) )
 
 -- Hooks
 import XMonad.Hooks.DynamicLog
@@ -21,11 +21,14 @@ import XMonad.Actions.WindowGo
 
 -- Layouts
 import XMonad.Layout.Accordion
+import XMonad.Layout.DecorationMadness
 import XMonad.Layout.Tabbed
 
 -- Layout helpers
+import XMonad.Layout.LayoutCombinators
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.Magnifier
+import XMonad.Layout.PerWorkspace
 import XMonad.Layout.NoBorders
 
 -- Prompt
@@ -133,12 +136,15 @@ myKeys = [
 			("M-<Right>",	moveTo Next NonEmptyWS),
 			("M-<Left>",	moveTo Prev NonEmptyWS),
 			("M-S-<Right>",	shiftToNext >> nextWS),
-			("M-S-<Left>",	shiftToPrev >> prevWS)
+			("M-S-<Left>",	shiftToPrev >> prevWS),
+
+			-- window controls
+			("M-f",			sendMessage $ JumpToLayout "Full")
 		 ]
 
 -- List of workspaces
 --
-myWorkspaces = ["1:main","2:web","3:code","4:file","5:chat","6:ssh","7:mail","8:mon","9:float","0:x","-","="]
+myWorkspaces = ["1:main","2:web","3:code","4:file","5:chat","6:ssh","7:mail","8:mon","9:float","0:misc","-","="]
 
 -- Manage
 --
@@ -170,7 +176,7 @@ myManageHook = (composeAll . concat $
 			   ) <+> manageDocks
 	where
 		myCFloats =	["feh","MPlayer","vlc","Gimp","Xmessage"]
-		myTFloats =	[]
+		myTFloats =	["(float)"]
 		myIgnores =	["desktop_window"]
 		my1Shifts =	[]
 		my2Shifts =	["Firefox","Chromium"]
@@ -188,17 +194,21 @@ myManageHook = (composeAll . concat $
 
 -- Layout
 --
-myLayoutHook =	avoidStruts $
-				standardLayouts
+myLayoutHook =	avoidStruts											$
+				onWorkspace (myWorkspaces!!1) simpleTabbed			$
+				onWorkspace (myWorkspaces!!8) (float ||| trueFull)	$
+				standardLayouts		
 	where
 		standardLayouts =	tiled ||| Mirror tiled ||| Accordion |||
-							trueFull ||| magTiled ||| simpleTabbed
+							trueFull ||| magTiled ||| simpleTabbed |||
+							hinted float
 
 		hinted l = layoutHintsWithPlacement (0.5,0.5) l
 
 		tiled = Tall nmaster delta ratio
 		trueFull = noBorders Full
 		magTiled = magnifier tiled
+		float = floatSimpleDefault
 
 		nmaster = 1
 		ratio = 9/16
@@ -206,7 +216,7 @@ myLayoutHook =	avoidStruts $
 
 -- Log
 --
-myLogHook pipe = dynamicLogWithPP $ defaultPP
+myLogHook pipe = dynamicLogWithPP $ xmobarPP
 					{
 						ppOutput = hPutStrLn pipe
 					}
@@ -218,3 +228,4 @@ myStartupHook = do
 	spawn "feh --bg-fill ~/Pictures/Dropbacks/wallpaper"
 	spawn "xsetroot -cursor_name left_ptr"
 	spawn "pgrep conky || conky"
+	spawn "setxkbmap -option ctrl:nocaps"
