@@ -114,6 +114,7 @@ myKeys = [
 			("M-m",		raiseMaybe (runInTerm "-T mutt" "mutt") (title =* "mutt")),
 			("M-p",		raiseMaybe (runInTerm "-T ncmpcpp" "ncmpcpp") (title =* "ncmpcpp")),
 			("M-t",		spawn "Thunar"),
+			("M-S-t",	spawn "tweet"),
 			("M-w",		raiseBrowser),
 
 			-- multimedia keys
@@ -176,7 +177,7 @@ myManageHook = (composeAll . concat $
 			   ) <+> manageDocks
 	where
 		myCFloats =	["feh","MPlayer","vlc","Gimp","Xmessage"]
-		myTFloats =	["(float)"]
+		myTFloats =	["float","Gnuplot"]
 		myIgnores =	["desktop_window"]
 		my1Shifts =	[]
 		my2Shifts =	["Firefox","Chromium"]
@@ -187,9 +188,9 @@ myManageHook = (composeAll . concat $
 		my7Shifts =	["mutt"]
 		my8Shifts =	[]
 		my9Shifts =	[]
-		my0Shifts =	["ncmpcpp","MPlayer","vlc"]
+		my0Shifts =	["ncmpcpp","vlc"]
 		myMinusShifts =	[]
-		myEqualShifts =	[]
+		myEqualShifts =	["MPlayer"]
 		viewShift = doF . liftM2 (.) W.greedyView W.shift
 
 -- Layout
