@@ -113,7 +113,7 @@ myKeys = [
 			("M-<Tab>",	spawn myTerminal),
 			("M-m",		raiseMaybe (runInTerm "-T mutt" "mutt") (title =* "mutt")),
 			("M-p",		raiseMaybe (runInTerm "-T ncmpcpp" "ncmpcpp") (title =* "ncmpcpp")),
-			("M-t",		spawn "Thunar"),
+			("M-t",		spawn "dolphin"),
 			("M-S-t",	spawn "tweet"),
 			("M-w",		raiseBrowser),
 
@@ -121,10 +121,15 @@ myKeys = [
 			("M-<XF86AudioMute>",			spawn "amixer -q sset Master toggle"),
 			("M-<XF86AudioLowerVolume>",	spawn "amixer -q sset Master 1%-"),
 			("M-<XF86AudioRaiseVolume>",	spawn "amixer -q sset Master 1%+"),
-			("M-<XF86AudioPrev>",			spawn "mpc prev"),
-			("M-<XF86AudioPlay>",			spawn "mpc toggle"),
-			("M-<XF86AudioNext>",			spawn "mpc next"),
-			("M-S-<XF86AudioPlay>",			spawn "mpc stop"),
+
+            -- mpd keys
+			("<XF86AudioMute>",			spawn "amixer -q sset Master toggle"),
+			("<XF86AudioLowerVolume>",	spawn "mpc volume -1"),
+			("<XF86AudioRaiseVolume>",	spawn "mpc volume +1"),
+			("<XF86AudioPrev>",			spawn "mpc prev"),
+			("<XF86AudioPlay>",			spawn "mpc toggle"),
+			("<XF86AudioNext>",			spawn "mpc next"),
+			("S-<XF86AudioPlay>",		spawn "mpc stop"),
 
 			-- prompt
 			("M-r",			shellPrompt myXPConfig),
@@ -176,20 +181,20 @@ myManageHook = (composeAll . concat $
 				]
 			   ) <+> manageDocks
 	where
-		myCFloats =	["feh","MPlayer","vlc","Gimp","Xmessage"]
+		myCFloats =	["feh","MPlayer","vlc","Gimp","Xmessage","Qjackctl","Qsynth"]
 		myTFloats =	["float","Gnuplot"]
 		myIgnores =	["desktop_window"]
 		my1Shifts =	[]
 		my2Shifts =	["Firefox","Chromium"]
 		my3Shifts =	["Eclipse","emacs"]
-		my4Shifts =	["Thunar"]
+		my4Shifts =	["Thunar", "dolphin"]
 		my5Shifts =	["Xchat","Pidgin"]
 		my6Shifts =	["ssh"]
 		my7Shifts =	["mutt"]
 		my8Shifts =	[]
 		my9Shifts =	[]
 		my0Shifts =	["ncmpcpp","vlc"]
-		myMinusShifts =	[]
+		myMinusShifts =	["Qjackctl","QSynth"]
 		myEqualShifts =	["MPlayer"]
 		viewShift = doF . liftM2 (.) W.greedyView W.shift
 
