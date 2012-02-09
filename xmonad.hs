@@ -116,20 +116,25 @@ myKeys = [
 			("M-t",		spawn "dolphin"),
 			("M-S-t",	spawn "tweet"),
 			("M-w",		raiseBrowser),
+			("M-S-w",	spawn "firefox"),
+			("M-C-l",	spawn "xscreensaver-command -lock"),
+			("M-v",     spawn "feh -rz --bg-fill ~/Pictures/Dropbacks/"),
 
 			-- multimedia keys
-			("M-<XF86AudioMute>",			spawn "amixer -q sset Master toggle"),
-			("M-<XF86AudioLowerVolume>",	spawn "amixer -q sset Master 1%-"),
-			("M-<XF86AudioRaiseVolume>",	spawn "amixer -q sset Master 1%+"),
+			("M-<XF86AudioMute>",			spawn "amixer -q -c0 sset Master toggle"),
+			("M-<XF86AudioLowerVolume>",	spawn "amixer -q -c0 sset Master 1%-"),
+			("M-<XF86AudioRaiseVolume>",	spawn "amixer -q -c0 sset Master 1%+"),
+			("S-<XF86AudioLowerVolume>",	spawn "amixer -q -c0 sset Headphone 1%-"),
+			("S-<XF86AudioRaiseVolume>",	spawn "amixer -q -c0 sset Headphone 1%+"),
 
             -- mpd keys
 			("<XF86AudioMute>",			spawn "amixer -q sset Master toggle"),
-			("<XF86AudioLowerVolume>",	spawn "mpc volume -1"),
-			("<XF86AudioRaiseVolume>",	spawn "mpc volume +1"),
-			("<XF86AudioPrev>",			spawn "mpc prev"),
-			("<XF86AudioPlay>",			spawn "mpc toggle"),
-			("<XF86AudioNext>",			spawn "mpc next"),
-			("S-<XF86AudioPlay>",		spawn "mpc stop"),
+			("<XF86AudioLowerVolume>",	spawn "mpc -q volume -1"),
+			("<XF86AudioRaiseVolume>",	spawn "mpc -q volume +1"),
+			("<XF86AudioPrev>",			spawn "mpc -q prev"),
+			("<XF86AudioPlay>",			spawn "mpc -q toggle"),
+			("<XF86AudioNext>",			spawn "mpc -q next"),
+			("S-<XF86AudioPlay>",		spawn "mpc -q stop"),
 
 			-- prompt
 			("M-r",			shellPrompt myXPConfig),
@@ -181,8 +186,8 @@ myManageHook = (composeAll . concat $
 				]
 			   ) <+> manageDocks
 	where
-		myCFloats =	["feh","MPlayer","vlc","Gimp","Xmessage","Qjackctl","Qsynth"]
-		myTFloats =	["float","Gnuplot"]
+		myCFloats =	["feh","MPlayer","vlc","Xmessage","Qjackctl","Qsynth"]
+		myTFloats =	["float","roottail","Gnuplot","nam","Nam","exe","Presentation","plugin-container","EdSim"]
 		myIgnores =	["desktop_window"]
 		my1Shifts =	[]
 		my2Shifts =	["Firefox","Chromium"]
@@ -230,8 +235,10 @@ myLogHook pipe = dynamicLogWithPP $ xmobarPP
 -- Startup
 --
 myStartupHook = do
-	spawn "pgrep xcompmgr || xcompmgr"
-	spawn "feh --bg-fill ~/Pictures/Dropbacks/wallpaper"
+	spawn "feh --bg-fill ~/Pictures/Dropbacks/Wallpaper/wallpaper"
 	spawn "xsetroot -cursor_name left_ptr"
-	spawn "pgrep conky || conky"
 	spawn "setxkbmap -option ctrl:nocaps"
+	spawn "wmname LG3D"
+	spawn "pgrep xcompmgr || xcompmgr"
+	spawn "pgrep xscreensaver || xscreensaver -no-splash"
+--	spawn "gmusic"
