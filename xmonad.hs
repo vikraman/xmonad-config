@@ -1,11 +1,10 @@
 -- ~/.xmonad/xmonad.hs
 
 import XMonad
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.UrgencyHook
 
-import DBus.Client.Simple
+import System.Taffybar.Hooks.PagerHints
 
 import Config
 import Keys
@@ -15,20 +14,20 @@ import Manage
 import Startup
 
 main :: IO ()
-main = do
-  client <- connectSession
-  xmonad $ withUrgencyHook NoUrgencyHook
-    $ defaultConfig { terminal           = myTerminal
-                    , modMask            = myModMask
-                    , focusFollowsMouse  = myFocusFollowsMouse
-                    , clickJustFocuses   = myClickJustFocuses
-                    , normalBorderColor  = myNormalBorderColor
-                    , focusedBorderColor = myFocusedBorderColor
-                    , borderWidth        = myBorderWidth
-                    , workspaces         = myWorkspaces
-                    , keys               = myKeys
-                    , logHook            = myLogHook client
-                    , manageHook         = myManageHook
-                    , layoutHook         = myLayoutHook
-                    , startupHook        = myStartupHook
-                    }
+main = do xmonad
+       $ ewmh
+       $ pagerHints
+       $ withUrgencyHook NoUrgencyHook
+       $ defaultConfig { terminal           = myTerminal
+                       , modMask            = myModMask
+                       , focusFollowsMouse  = myFocusFollowsMouse
+                       , clickJustFocuses   = myClickJustFocuses
+                       , normalBorderColor  = myNormalBorderColor
+                       , focusedBorderColor = myFocusedBorderColor
+                       , borderWidth        = myBorderWidth
+                       , workspaces         = myWorkspaces
+                       , keys               = myKeys
+                       , manageHook         = myManageHook
+                       , layoutHook         = myLayoutHook
+                       , startupHook        = myStartupHook
+                       }
