@@ -1,5 +1,6 @@
 module HandleEvent where
 
+import XMonad
 import XMonad.Hooks.EwmhDesktops
 
-myHandleEventHook = ewmhDesktopsEventHook
+myHandleEventHook = fullscreenEventHook <+> ewmhDesktopsEventHook
