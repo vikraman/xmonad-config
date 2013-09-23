@@ -1,11 +1,13 @@
 module Startup where
 
 import XMonad
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Util.Cursor
 import XMonad.Util.SpawnOnce
 
 myStartupHook :: X ()
 myStartupHook = do
+  ewmhDesktopsStartup
   setDefaultCursor xC_left_ptr
   spawnOnce "urxvtd -q -o"
   spawnOnce "taffybar"
